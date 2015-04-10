@@ -4,10 +4,10 @@
 CS51 Final Project to detect emails containing events. Inspired by HCS Mail projects.
 
 ## Team members: 
--Frances Ding		francesding@college.harvard.edu 
--Raynor Kuang		raynorkuang@college.harvard.edu 
--Jimmy Lin		hlin01@college.harvard.edu 
--Daniel Wang 		danielwang01@college.harvard.edu 
+- Frances Ding		francesding@college.harvard.edu 
+- Raynor Kuang		raynorkuang@college.harvard.edu 
+- Jimmy Lin		hlin01@college.harvard.edu 
+- Daniel Wang 		danielwang01@college.harvard.edu 
 
 
 ## Overview 
@@ -17,11 +17,11 @@ Harvard students receive dozens of emails on a daily basis, many of which contai
 
 ### Core features
 
--Flag emails which contain event information
+- Flag emails which contain event information
 
 ### Cool extensions
--Delete or lump together emails that are identical but from different senders
--Extract event information from emails publicizing events and construct a calendar
+- Delete or lump together emails that are identical but from different senders
+- Extract event information from emails publicizing events and construct a calendar
 
 ## Technical Specifications 
 
