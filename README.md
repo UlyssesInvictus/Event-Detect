@@ -3,7 +3,20 @@
 # Project: Email NLP
 CS51 Final Project to detect emails containing events. Inspired by HCS Mail projects.
 
-## Team members: 
+## Table of Contents
+1. [Team members](Team members)
+2. [Overview](Overview)
+3. [Features List](Features List)
+  - [Core features](Core features)
+  - [Cool extensions](Cool extensions)
+4. [Technical Specifications](Technical Specifications)
+  - [Preprocessing](Preprocessing)
+  - [Features Selection](Features Selection)
+  - [Naive Bayesian Classification](Naive Bayesian Classification)
+5. [Next Steps](Next Steps)
+6. [Notes and Useful Links](Notes and Useful Links)
+
+## Team members 
 - Frances Ding		francesding@college.harvard.edu 
 - Raynor Kuang		raynorkuang@college.harvard.edu 
 - Jimmy Lin		hlin01@college.harvard.edu 
