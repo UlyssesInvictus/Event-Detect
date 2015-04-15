@@ -4,17 +4,17 @@
 CS51 Final Project to detect emails containing events. Inspired by HCS Mail projects.
 
 ## Table of Contents
-1. [Team members](Team members)
-2. [Overview](Overview)
-3. [Features List](Features List)
-  - [Core features](Core features)
-  - [Cool extensions](Cool extensions)
-4. [Technical Specifications](Technical Specifications)
-  - [Preprocessing](Preprocessing)
-  - [Features Selection](Features Selection)
-  - [Naive Bayesian Classification](Naive Bayesian Classification)
-5. [Next Steps](Next Steps)
-6. [Notes and Useful Links](Notes and Useful Links)
+1. [Team members](#team-members)
+2. [Overview](#overview)
+3. [Features List](#features-list)
+  - [Core features](#core-features)
+  - [Cool extensions](#cool-extensions)
+4. [Technical Specifications](#technical-specifications)
+  - [Preprocessing](#preprocessing)
+  - [Features Selection](#features-selection)
+  - [Naive Bayesian Classification](#naive-bayesian-classification)
+5. [Next Steps](#next-steps)
+6. [Notes and Useful Links](#notes-and-useful-links)
 
 ## Team members 
 - Frances Ding		francesding@college.harvard.edu 
