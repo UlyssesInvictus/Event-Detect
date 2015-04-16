@@ -1,6 +1,6 @@
-import Preprocessing.py as preprocess
-import Features.py as feature
-import Bayesian.py as bayesian
+import Utility.py as u
+import Features.py as f
+import Bayesian.py as b
 
 
 """
@@ -12,8 +12,8 @@ learning_name = raw_input()
 print "Enter name of file containing test set: "
 test_name = raw_input()
 
-learning_data = preprocess.parse(learning_name)
-test_data = preprocess.parse(test_name)
+learning_data = u.parse(learning_name)
+test_data = u.parse(test_name)
 
 """
 FEATURES
@@ -46,4 +46,4 @@ print "Is Event | Email Body"
 for i in xrange(len(guesses)):
   print guesses[i] + " | " + test_data[i]
 
-  
+
