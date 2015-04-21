@@ -1,5 +1,9 @@
 # Event-Detect
 CS51 Final Project to detect emails containing events. Inspired by HCS Mail projects.
+## Timeline
+|Date|Description|
+|:--|--:|
+|Monday April 20th|Have Data/Learning sets ready|
 ##Module Descriptions and Updates
 ###Statistics Module
 4-21
