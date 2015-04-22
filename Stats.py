@@ -34,6 +34,6 @@ output- amalgamated probability vector, weighted correctly for final pass to Bay
 We will obtain probability information from each of our features, so we wish to provide a method to determine the weights of each one.
 """
 
-def feature_weighter(bools):
+def feature_weighter(prob_lsts):
   p = []
   return p
