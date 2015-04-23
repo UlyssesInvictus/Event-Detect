@@ -15,19 +15,30 @@ test_name = raw_input()
 
 learning_data = u.read_learning_data(learning_name,0)
 test_data = u.read_test_data(test_name, 0)
-
-print test_data
+fields = list(test_data.keys)
+num_fields = len(fields)
+num_nonevents = len(learning_data[0][fields[0]])
+num_events = len(learning_data[1][fields[0]])
+num_tests = len(test_data[fields[0]])
 
 sys.exit(0)
 """
 FEATURES
 """
 
-learning_features = [[] for i in range(learning_data)]
-test_features = [[] for i in range(test_data)]
 
-for i in xrange(len(learning_features)):
-  learning_features[i] = feature.parse(learning_data[i])
+learning_nonevent_features = [[] for i in xrange(num_nonevents)]
+learning_event_features = [[] for i in xrange(num_events)]
+test_features = [[] for i in xrange(num_tests)]
+
+for i in xrange(num_nonevents):
+
+  for k in fields:
+    learning_nonevent_features[i] = 
+      f.get_features(learning_data[0][k][i])
+
+for i in xrange(num_events):
+
 
 for i in xrange(len(test_features)):
   test_features[i] = feature.parse(test_data[i])

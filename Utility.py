@@ -22,29 +22,42 @@ def read_learning_data(filename, numtypes):
     else:
       num_nonevents += 1
 
-  # initalize keys in the final dictionary
-  time[0] = ["" for i in xrange(num_nonevents)]
-  time[1] = ["" for i in xrange(num_events)]
-  sender = ["" for i in xrange(num_rows)]
-  subject = [[] for i in xrange(num_rows)]
-  message = [[] for i in xrange(num_rows)]
+  # initalize keys
+  non_time = ["" for i in xrange(num_nonevents)]
+  time = ["" for i in xrange(num_events)]
+  non_sender = ["" for i in xrange(num_nonevents)]
+  sender = ["" for i in xrange(num_events)]
+  non_subject = [[] for i in xrange(num_nonevents)]
+  subject = [[] for i in xrange(num_events)]
+  non_message = [[] for i in xrange(num_nonevents)]
+  message = [[] for i in xrange(num_events)]]
 
   remove_punctuation_map = dict((ord(char), ord(" ")) for char in string.punctuation)
   del remove_punctuation_map[ord("'")]
 
   # iterate through excel, reading strings
   for row in xrange(1,num_rows+1):
-    time[row-1] = book.cell(row,0).value
-    send_raw = book.cell(row,1).value
-    sender[row-1] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
-    subject_raw = (book.cell(row,2).value)
-    subject[row-1] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
-    message_raw = (book.cell(row,3).value)
-    message[row-1] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+    if book.cell(row,5) == 1:
+      time[row-1] = book.cell(row,0).value
+      send_raw = book.cell(row,1).value
+      sender[row-1] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
+      subject_raw = (book.cell(row,2).value)
+      subject[row-1] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      message_raw = (book.cell(row,3).value)
+      message[row-1] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+    else:
+      non_time[row-1] = book.cell(row,0).value
+      send_raw = book.cell(row,1).value
+      non_sender[row-1] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
+      subject_raw = (book.cell(row,2).value)
+      non_subject[row-1] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      message_raw = (book.cell(row,3).value)
+      non_message[row-1] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
 
-  # return dict with each field type
-  test_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message}
-  return test_data
+  # return tuple of dicts with each field type
+  event_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message}
+  non_event_data = {'time':non_time, 'sender': non_sender, 'subject':non_subject, 'message':non_message}
+  return (non_event_data, event_data)
 
 """
 Input: filename of test data and number of columns of email data
@@ -64,6 +77,7 @@ def read_test_data(filename, numtypes):
   subject = [[] for i in xrange(num_rows)]
   message = [[] for i in xrange(num_rows)]
 
+  # for converting punctuation
   remove_punctuation_map = dict((ord(char), ord(" ")) for char in string.punctuation)
   del remove_punctuation_map[ord("'")]
 
