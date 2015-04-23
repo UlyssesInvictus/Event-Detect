@@ -100,6 +100,15 @@ def read_test_data(filename, numtypes):
   return test_data
 
 
+def read_event_ids(filename,numtypes):
+  # open book
+  workbook = xlrd.open_workbook(filename)
+  book = workbook.sheet_by_index(0)
+
+  # count number of events and nonevents
+  num_rows = book.nrows - 1
+  return [book.cell(row, numtypes).value for row in xrange(1,num_rows+1)]
+
 """
 Input: string
 Output: array of words.
@@ -120,6 +129,18 @@ def get_frequencies(words):
   return dict(freq_dict)
 
 """
+Input: matrix of numbers
+Output: array with same length as matrix where elements are vertically summed
+"""
+# To be replaced by numpy eventually
+def vertical_sum(matrix):
+  s = [0 for i in range(len(matrix[0]))]
+  for i in range(len(matrix[0])):
+    for j in range(len(matrix)):
+      s[i] += matrix[j][i]
+  return s
+
+"""
 Input: array of testing email data, array of output classifications
 Output: float representing the percent accuracy of the classifier
 """
@@ -129,4 +150,4 @@ def get_accuracy(true_id, classified_id):
   for i in range(len(true_id)):
     if true_id[i] == classified_id[i]:
       hits += 1
-  return (hits / len(true_id))
+  return (float(hits) / len(true_id))

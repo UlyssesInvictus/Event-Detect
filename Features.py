@@ -27,7 +27,7 @@ def get_features(words,filename="rares.txt"):
   # get rares 
   with open(filename) as f:
     rares = f.readlines()
-  rares = [r.rstrip() for r in rares]
+  rares = [r.lower().rstrip() for r in rares]
   num_rares = len(rares)
 
   # calculate feature vector
@@ -41,3 +41,6 @@ def get_features(words,filename="rares.txt"):
       features[i+num_rares] = 0
 
   return features
+
+def get_bits(features,averages):
+  return [features[i] > averages[i] for i in xrange(len(features))]
