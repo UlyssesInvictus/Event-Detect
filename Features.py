@@ -1,11 +1,4 @@
-import Ultity.py as u
-
-
-
-"""
-Input: Dict with key "message" mapping to list of lists of parsed strings
-Output: Dict with key word string mapping to respective absolute frequency of word
-"""
+import Utility as u
 
 
 """
@@ -21,12 +14,30 @@ def set_rares(event_words,unevent_words,filename="rares.txt",num_rares=25):
   return sorted_relative
 
 """
-Input: array of email data and rare words files (optional).
+Input: array of email words and rare words filename (optional).
 Output: array of metrics.
 If no rare words argument passed, defaults to a file. If file doesn't already exist, prints notice to call set_rares and fails. 
 Metrics TBD. Currently set: number of rare words. Boolean for rare word. 
 """
 
-def get_features(data,filename="rares.txt"):
-  features = []
+def get_features(words,filename="rares.txt"):
+  # get frequencies for words
+  word_freq = u.get_frequencies(words)
+  
+  # get rares 
+  with open(filename) as f:
+    rares = f.readlines()
+  rares = [r.rstrip() for r in rares]
+  num_rares = len(rares)
+
+  # calculate feature vector
+  features = [0 for i in xrange(num_rares * 2)]
+  for i in xrange(num_rares):
+    if rares[i] in word_freq:
+      features[i] = word_freq[rares[i]]
+      features[i+num_rares] = 1
+    else:
+      features[i] = 0
+      features[i+num_rares] = 0
+
   return features

@@ -1,4 +1,4 @@
-import Stats.py as s
+import Stats as s
 
 
 """ STUFF """
