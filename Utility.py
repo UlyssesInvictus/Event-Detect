@@ -64,6 +64,6 @@ Output: dictionary of all words and number of appearances of word.
 def get_frequencies(words):
   full_list = []
   freq_dict= defaultdict( int )
-  for word in full_list:
+  for word in words:
     freq_dict[word] += 1
   return freq_dict
