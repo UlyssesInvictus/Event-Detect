@@ -32,16 +32,19 @@ learning_event_features = [[] for i in xrange(num_events)]
 test_features = [[] for i in xrange(num_tests)]
 
 for i in xrange(num_nonevents):
-
   for k in fields:
-    learning_nonevent_features[i] = 
+    learning_nonevent_features[i] = learning_nonevent_features[i] +
       f.get_features(learning_data[0][k][i])
 
 for i in xrange(num_events):
+  for k in fields:
+    learning_event_features[i] = learning_event_features[i] +
+      f.get_features(learning_data[1][k][i])
 
-
-for i in xrange(len(test_features)):
-  test_features[i] = feature.parse(test_data[i])
+for i in xrange(num_tests):
+  for k in fields:
+    test_features[i] = test_features[i] +
+      f.get_features(test_data[k][i])
 
 """
 BAYESIAN
