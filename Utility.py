@@ -30,7 +30,7 @@ def read_learning_data(filename, numtypes):
   non_subject = [[] for i in xrange(num_nonevents)]
   subject = [[] for i in xrange(num_events)]
   non_message = [[] for i in xrange(num_nonevents)]
-  message = [[] for i in xrange(num_events)]]
+  message = [[] for i in xrange(num_events)]
 
   remove_punctuation_map = dict((ord(char), ord(" ")) for char in string.punctuation)
   del remove_punctuation_map[ord("'")]
