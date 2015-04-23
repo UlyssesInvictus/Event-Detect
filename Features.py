@@ -1,5 +1,15 @@
 import Ultity.py as u
+from collections import defaultdict
 
+
+
+def extract_words(email_dict):
+	full_list = []
+	for sublst in email_dict["message"]:
+		full_list.append(sublst)
+	freq_dict= defaultdict( int )
+	for word in full_list:
+		freq_dict[word] += 1
 
 
 """
