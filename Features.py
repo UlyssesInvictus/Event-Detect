@@ -1,6 +1,4 @@
-import Ultity.py as u
-
-
+import Utility as u
 
 """
 Input: arrays of email strings for events and non-events, filename (optional), and number of rare words (optional).
@@ -17,7 +15,7 @@ def set_rares(event_words,unevent_words,filename="rares.txt",num_rares=25):
 """
 Input: array of email data and rare words files (optional).
 Output: array of metrics.
-If no rare words argument passed, defaults to a file. If file doesn’t already exist, prints notice to call set_rares and fails. 
+If no rare words argument passed, defaults to a file. If file doesn't already exist, prints notice to call set_rares and fails. 
 Metrics TBD. Currently set: number of rare words. Boolean for rare word. 
 """
 
