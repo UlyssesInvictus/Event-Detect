@@ -1,6 +1,8 @@
-import Utility.py as u
-import Features.py as f
-import Bayesian.py as b
+import sys
+
+import Utility as u
+import Features as f
+import Bayes as b
 
 
 """
@@ -12,9 +14,12 @@ learning_name = raw_input()
 print "Enter name of file containing test set: "
 test_name = raw_input()
 
-learning_data = u.parse(learning_name)
-test_data = u.parse(test_name)
+learning_data = u.read_learning_data(learning_name,0)
+test_data = u.read_test_data(test_name, 0)
 
+print test_data
+
+sys.exit(0)
 """
 FEATURES
 """
