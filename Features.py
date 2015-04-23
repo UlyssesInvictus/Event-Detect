@@ -1,19 +1,12 @@
 import Ultity.py as u
-from collections import defaultdict
+
 
 
 """
 Input: Dict with key "message" mapping to list of lists of parsed strings
 Output: Dict with key word string mapping to respective absolute frequency of word
 """
-def extract_words(email_dict):
-  full_list = []
-  for sublst in email_dict["message"]:
-    full_list.append(sublst)
-	freq_dict= defaultdict( int )
-	for wod in full_list:
-		freq_dict[word] += 1
-	return freq_dict
+
 
 """
 Input: arrays of email strings for events and non-events, filename (optional), and number of rare words (optional).

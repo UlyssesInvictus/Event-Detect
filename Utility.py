@@ -1,5 +1,6 @@
 import xlrd
 import string
+from collections import defaultdict
 
 """
 Input: filename of learning data and number of columns of email data
@@ -57,9 +58,12 @@ def split_data(text):
   return words
 
 """
-Input: array of words.
+Input: list of words.
 Output: dictionary of all words and number of appearances of word.
 """
 def get_frequences(words):
-  frequencies = {}
-  return frequencies
+  full_list = []
+  freq_dict= defaultdict( int )
+  for word in full_list:
+    freq_dict[word] += 1
+  return freq_dict
