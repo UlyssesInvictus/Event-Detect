@@ -61,7 +61,7 @@ def split_data(text):
 Input: list of words.
 Output: dictionary of all words and number of appearances of word.
 """
-def get_frequences(words):
+def get_frequencies(words):
   full_list = []
   freq_dict= defaultdict( int )
   for word in full_list:
