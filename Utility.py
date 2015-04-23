@@ -114,3 +114,15 @@ def get_frequencies(words):
   for word in words:
     freq_dict[word] += 1
   return dict(freq_dict)
+
+"""
+Input: array of testing email data, array of output classifications
+Output: float representing the percent accuracy of the classifier
+"""
+
+def get_accuracy(true_id, classified_id):
+  hits = 0
+  for i in range(len(true_id)):
+      if true_id[i] == classified_id[i]:
+      hits += 1
+  return (hits / len(true_id))
