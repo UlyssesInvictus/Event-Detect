@@ -1,5 +1,6 @@
 import Utility as u
 from operator import itemgetter
+import numpy
 
 """
 Input: (long) arrays of words for events and non-events
@@ -12,16 +13,14 @@ def get_rares(event_words,nonevent_words):
   event_freaks = u.get_frequencies(event_words)
   nonevent_freaks = u.get_frequencies(nonevent_words)
 
-  print event_freaks["your"], len(event_words)
-  print nonevent_freaks["your"], len(nonevent_words)
-
   all_words = list (set(event_freaks) | set(nonevent_freaks))
   relative_freaks = [("blank",0) for i in xrange(len(all_words))]
   word_count = 0
   for word in all_words:
     event_count = 0 if word not in event_freaks else event_freaks[word]
     nonevent_count = 0 if word not in nonevent_freaks else nonevent_freaks[word]
-    relative_freaks[word_count] = (word,event_count/float(len(event_words)) - nonevent_count/float(len(nonevent_words)))
+    # relative_freaks[word_count] = (word,event_count/float(len(event_words)) - nonevent_count/float(len(nonevent_words)))
+    relative_freaks[word_count] = (word,event_count/94.0 - nonevent_count/797.0)
     word_count+=1
 
   event_exclusive = list (set(event_freaks) - set(nonevent_freaks))

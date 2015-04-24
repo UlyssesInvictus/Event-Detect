@@ -44,18 +44,30 @@ def read_learning_data(filename, numtypes):
       send_raw = book.cell(row,1).value
       sender[event_count] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
       subject_raw = (book.cell(row,2).value)
-      subject[event_count] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      if subject_raw == "":
+        subject[event_count] = ["no", "sender"]
+      else:
+        subject[event_count] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
       message_raw = (book.cell(row,3).value)
-      message[event_count] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      if message_raw == "":
+        message[event_count] = ["no", "message"]
+      else: 
+        message[event_count] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
       event_count += 1
     else:
       non_time[nonevent_count] = book.cell(row,0).value
       send_raw = book.cell(row,1).value
       non_sender[nonevent_count] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
       subject_raw = (book.cell(row,2).value)
-      non_subject[nonevent_count] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      if subject_raw == "":
+        non_subject[nonevent_count] = ["no", "sender"]
+      else:
+        non_subject[nonevent_count] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
       message_raw = (book.cell(row,3).value)
-      non_message[nonevent_count] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      if message_raw == "":
+        non_message[nonevent_count] = ["no", "message"]
+      else:
+        non_message[nonevent_count] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
       nonevent_count += 1
 
   # return tuple of dicts with each field type
@@ -139,6 +151,14 @@ def vertical_sum(matrix):
     for j in range(len(matrix)):
       s[i] += matrix[j][i]
   return s
+
+"""
+Input: array of feature vectors per email
+Output: array of arrays of values for same feature
+"""
+
+def by_features(matrix):
+  return zip(*matrix)
 
 """
 Input: array of testing email data, array of output classifications
