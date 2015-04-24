@@ -23,7 +23,7 @@ def per_height(x, mean, stdev):
   m_height = (1 / (math.sqrt(2*math.pi) * stdev))
   return x_height
 
-def cdf(x,mean,stdev):
+def cdf(x,mean,variance):
   # return norm.cdf(x,loc=mean,scale=stdev)
   return expon.cdf(x,loc=0,scale=1/mean)
 
@@ -67,14 +67,14 @@ def two_bayesian (prior, features, posterior):
   event_prob = [0 for i in xrange(len(features))]
   nonevent_prob = [0 for i in xrange(len(features))]
   for i in xrange(len(features)):
-    if posterior[0][i][0] == 0 and posterior[0][i][1] == 0:
+    if posterior[0][i][1] == 0:
       if features[i] != 0:
-        event_prob[i] = 1
+        event_prob[i] = 0.00001
       else:
         event_prob[i] = 1
     else:
       event_prob[i] = per_height(features[i],posterior[0][i][0],posterior[0][i][1])
-    if posterior[1][i][0] == 0 and posterior[1][i][1] == 0:
+    if posterior[1][i][1] == 0:
       if features[i] != 0:
         nonevent_prob[i] = 0.00001
       else:

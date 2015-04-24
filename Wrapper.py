@@ -13,7 +13,7 @@ learning_name = "data/learning_data.xlsx"#raw_input()
 print "Enter name of file containing test set: "
 test_name = "data/test_data.xlsx"#raw_input()
 print "Enter name of rare words file; leave blank to generate in rares.txt"
-rare_name = "test.txt"#"human.txt"#"test.txt"#raw_input()
+rare_name = raw_input()#"test.txt"#"human.txt"#"test.txt"#raw_input()
 
 learning_data = u.read_learning_data(learning_name,0)
 test_data = u.read_test_data(test_name, 0)
@@ -99,6 +99,7 @@ prior = (num_events/float(num_learning),
 event_by_features = u.by_features(learning_event_features)
 nonevent_by_features = u.by_features(learning_nonevent_features)
 
+
 # two curves
 event_posterior = [(b.mean(feature),b.stdev(feature)) for feature in event_by_features]
 nonevent_posterior = [(b.mean(feature),b.stdev(feature)) for feature in nonevent_by_features]
@@ -118,12 +119,11 @@ guesses = [b.two_bayesian(prior, i, two_posterior) for i in test_features]
 RESULTS
 """
 
-# print distro (commented while format is still uncertain)
-# print "Is Event | First 10 Words of Email Subject | First 10 Words of Email Body"
-for i in xrange(len(guesses)):
+print "Is Event (First 20 Emails) | First 10 Words of Email Subject | First 10 Words of Email Body"
+for i in xrange(min(30,len(guesses))):
   subject = ' '.join(test_data["subject"][i][:min(10,len(test_data["subject"][i]))])
   message = ' '.join(test_data["message"][i][:min(10,len(test_data["message"][i]))]) 
-  # print guesses[i], " | ", subject, " | ", message
+  print guesses[i], " | ", subject, " | ", message
 
 # TEST ONLY
 true_ids = [True if i == 1 else False for i in u.read_event_ids(test_name,4)]

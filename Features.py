@@ -1,7 +1,7 @@
 import Utility as u
 from operator import itemgetter
 import numpy
-
+import sys
 """
 Input: (long) arrays of words for events and non-events
 Output: array of tuples of word and relative frequency between event and nonevent, sorted by relative frequency 
