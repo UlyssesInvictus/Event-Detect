@@ -13,7 +13,7 @@ learning_name = "data/learning_data.xlsx"#raw_input()
 print "Enter name of file containing test set: "
 test_name = "data/test_data.xlsx"#raw_input()
 print "Enter name of rare words file; leave blank to generate in rares.txt"
-rare_name = ""#"human.txt"#"test.txt"#raw_input()
+rare_name = "test.txt"#"human.txt"#"test.txt"#raw_input()
 
 learning_data = u.read_learning_data(learning_name,0)
 test_data = u.read_test_data(test_name, 0)

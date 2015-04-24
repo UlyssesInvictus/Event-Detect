@@ -19,15 +19,10 @@ def get_rares(event_words,nonevent_words):
   for word in all_words:
     event_count = 0 if word not in event_freaks else event_freaks[word]
     nonevent_count = 0 if word not in nonevent_freaks else nonevent_freaks[word]
-    # relative_freaks[word_count] = (word,event_count/float(len(event_words)) - nonevent_count/float(len(nonevent_words)))
-    relative_freaks[word_count] = (word,event_count/94.0 - nonevent_count/797.0)
+    relative_freaks[word_count] = (word,event_count/float(len(event_words)) - nonevent_count/float(len(nonevent_words)))
     word_count+=1
 
-  event_exclusive = list (set(event_freaks) - set(nonevent_freaks))
-  event_exclusive_tuples = [(word,event_freaks[word]) for word in event_exclusive]
-
   return sorted(relative_freaks,key=lambda tup: tup[1],reverse=True)
-  # return sorted(event_exclusive_tuples,key=lambda tup:tup[1],reverse=True)
 
 
 """
