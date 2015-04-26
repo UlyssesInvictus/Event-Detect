@@ -45,7 +45,7 @@ def read_learning_data(filename, numtypes):
       sender[event_count] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
       subject_raw = (book.cell(row,2).value)
       if subject_raw == "":
-        subject[event_count] = ["no", "sender"]
+        subject[event_count] = ["no", "subject"]
       else:
         subject[event_count] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
       message_raw = (book.cell(row,3).value)
@@ -60,7 +60,7 @@ def read_learning_data(filename, numtypes):
       non_sender[nonevent_count] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
       subject_raw = (book.cell(row,2).value)
       if subject_raw == "":
-        non_subject[nonevent_count] = ["no", "sender"]
+        non_subject[nonevent_count] = ["no", "subject"]
       else:
         non_subject[nonevent_count] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
       message_raw = (book.cell(row,3).value)
@@ -103,9 +103,15 @@ def read_test_data(filename, numtypes):
     send_raw = book.cell(row,1).value
     sender[row-1] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
     subject_raw = (book.cell(row,2).value)
-    subject[row-1] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+    if subject_raw == "":
+      subject[row-1] = ["no", "subject"]
+    else:
+      subject[row-1] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
     message_raw = (book.cell(row,3).value)
-    message[row-1] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+    if message_raw == "":
+      message[row-1] = ["no", "message"]
+    else:
+      message[row-1] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
 
   # return dict with each field type
   test_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message}

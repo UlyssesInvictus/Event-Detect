@@ -1,4 +1,3 @@
-and
 harvard
 hcs
 of
@@ -9,7 +8,6 @@ currier
 list
 open
 be
-the
 students
 arts
 mailing
@@ -37,5 +35,3 @@ come
 up
 7pm
 30pm
-american
-7
