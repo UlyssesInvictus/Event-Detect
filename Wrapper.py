@@ -43,7 +43,7 @@ if rare_name == "":
       all_nonevent_words = all_nonevent_words + learning_data[0][k][i]
   rares = f.get_rares(all_event_words,all_nonevent_words)
   rarefile = open('rares.txt','w')
-  for rare,count in rares[0:39]:
+  for rare,count in rares[0:57]:
     rarefile.write(rare+'\n')
   rarefile.close()
 

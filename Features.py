@@ -19,11 +19,10 @@ def get_rares(event_words,nonevent_words):
   for word in all_words:
     event_count = 0 if word not in event_freaks else event_freaks[word]
     nonevent_count = 0 if word not in nonevent_freaks else nonevent_freaks[word]
-    relative_freaks[word_count] = (word,event_count/float(len(event_words)) - nonevent_count/float(len(nonevent_words)))
+    relative_freaks[word_count] = (word,event_count/float(len(event_freaks)) - nonevent_count/float(len(nonevent_freaks)))
     word_count+=1
 
   return sorted(relative_freaks,key=lambda tup: tup[1],reverse=True)
-
 
 """
 Input: array of email words and rare words filename (optional).
