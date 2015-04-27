@@ -86,7 +86,7 @@ def two_bayesian (prior, features, posterior):
   event_total = prior[0]*reduce(mul, event_prob, 1)
   nonevent_total = prior[1]*reduce(mul, nonevent_prob, 1)
  
-  # print event_total, nonevent_total
+  print event_total, nonevent_total
   return event_total > nonevent_total
   
 

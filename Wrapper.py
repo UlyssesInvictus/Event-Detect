@@ -119,8 +119,8 @@ guesses = [b.two_bayesian(prior, i, two_posterior) for i in test_features]
 RESULTS
 """
 
-print "Is Event (First 30 Emails) | First 10 Words of Email Subject | First 10 Words of Email Body"
-for i in xrange(min(30,len(guesses))):
+print "Is Event (First 40 Emails) | First 10 Words of Email Subject | First 10 Words of Email Body"
+for i in xrange(min(40,len(guesses))):
   subject = ' '.join(test_data["subject"][i][:min(10,len(test_data["subject"][i]))])
   message = ' '.join(test_data["message"][i][:min(10,len(test_data["message"][i]))]) 
   print guesses[i], " | ", subject, " | ", message

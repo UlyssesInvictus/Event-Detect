@@ -109,6 +109,8 @@ def read_test_data(filename, numtypes):
   # return dict with each field type
   test_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message}
 
+  # print book.cell(42,3).value.encode('ascii','backslashreplace'), split_data(book.cell(42,3).value)
+
   return test_data
 
 
@@ -129,8 +131,11 @@ Assumes space separation, though amount of spaces may be unclear. Restricted to 
 def split_data(text):
   # replace punctuation and misc chars
   punc_list = string.punctuation.replace("'","")
-  # char_map = string.maketrans(punc_list, ' '*len(punc_list))
-  ascii_text = text.replace(u'\xa0', u' ')
+  char_map = string.maketrans(punc_list, ' '*len(punc_list))
+  ascii_text = text.replace(u'\xa0', ' ') # spaces
+  ascii_text = ascii_text.replace(u'\u2028', ' ') # bullet points
+  ascii_text = ascii_text.replace(u'@', ' ')
+  ascii_text = ascii_text.replace(u':', ' ')
   ascii_text = ascii_text.encode('ascii','ignore')
   ascii_text = ascii_text.translate(None,punc_list)
 
