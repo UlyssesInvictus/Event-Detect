@@ -57,7 +57,7 @@ def get_features(words,filename="rares.txt"):
   features = [0 for i in xrange(num_rares)]
   for i in xrange(num_rares):
     if rares[i] in word_freq:
-      features[i] = 7 # found by trial and error
+      features[i] = 10 # found by trial and error
     else:
       features[i] = 0
 
