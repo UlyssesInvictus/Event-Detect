@@ -32,9 +32,6 @@ def read_learning_data(filename, numtypes):
   non_message = [[] for i in xrange(num_nonevents)]
   message = [[] for i in xrange(num_events)]
 
-  remove_punctuation_map = dict((ord(char), ord(" ")) for char in string.punctuation)
-  del remove_punctuation_map[ord("'")]
-
   # iterate through excel, reading strings
   event_count = 0
   nonevent_count = 0
@@ -44,18 +41,30 @@ def read_learning_data(filename, numtypes):
       send_raw = book.cell(row,1).value
       sender[event_count] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
       subject_raw = (book.cell(row,2).value)
-      subject[event_count] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      if subject_raw == "":
+        subject[event_count] = ["no", "subject"]
+      else:
+        subject[event_count] = split_data(subject_raw)
       message_raw = (book.cell(row,3).value)
-      message[event_count] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      if message_raw == "":
+        message[event_count] = ["no", "message"]
+      else: 
+        message[event_count] = split_data(message_raw)
       event_count += 1
     else:
       non_time[nonevent_count] = book.cell(row,0).value
       send_raw = book.cell(row,1).value
       non_sender[nonevent_count] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
       subject_raw = (book.cell(row,2).value)
-      non_subject[nonevent_count] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      if subject_raw == "":
+        non_subject[nonevent_count] = ["no", "subject"]
+      else:
+        non_subject[nonevent_count] = split_data(subject_raw)
       message_raw = (book.cell(row,3).value)
-      non_message[nonevent_count] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+      if message_raw == "":
+        non_message[nonevent_count] = ["no", "message"]
+      else:
+        non_message[nonevent_count] = split_data(message_raw)
       nonevent_count += 1
 
   # return tuple of dicts with each field type
@@ -81,22 +90,27 @@ def read_test_data(filename, numtypes):
   subject = [[] for i in xrange(num_rows)]
   message = [[] for i in xrange(num_rows)]
 
-  # for converting punctuation
-  remove_punctuation_map = dict((ord(char), ord(" ")) for char in string.punctuation)
-  del remove_punctuation_map[ord("'")]
-
   # iterate through excel, reading strings
   for row in xrange(1,num_rows+1):
     time[row-1] = book.cell(row,0).value
     send_raw = book.cell(row,1).value
     sender[row-1] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
     subject_raw = (book.cell(row,2).value)
-    subject[row-1] = [x.lower() for x in subject_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+    if subject_raw == "":
+      subject[row-1] = ["no", "subject"]
+    else:
+      subject[row-1] = split_data(subject_raw)
     message_raw = (book.cell(row,3).value)
-    message[row-1] = [x.lower() for x in message_raw.translate(remove_punctuation_map).encode('ascii','ignore').split()]
+    if message_raw == "":
+      message[row-1] = ["no", "message"]
+    else:
+      message[row-1] = split_data(message_raw)
 
   # return dict with each field type
   test_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message}
+
+  # print book.cell(42,3).value.encode('ascii','backslashreplace'), split_data(book.cell(42,3).value)
+
   return test_data
 
 
@@ -110,13 +124,22 @@ def read_event_ids(filename,numtypes):
   return [book.cell(row, numtypes).value for row in xrange(1,num_rows+1)]
 
 """
-Input: string
-Output: array of words.
-Assumes space separation, though amount of spaces may be unclear. To be further specified later in work pipeline. Restricted to module.
+Input: unicode string
+Output: array of ascii words.
+Assumes space separation, though amount of spaces may be unclear. Restricted to module.
 """
 def split_data(text):
-  words = []
-  return words
+  # replace punctuation and misc chars
+  punc_list = string.punctuation.replace("'","")
+  char_map = string.maketrans(punc_list, ' '*len(punc_list))
+  ascii_text = text.replace(u'\xa0', ' ') # spaces
+  ascii_text = ascii_text.replace(u'\u2028', ' ') # bullet points
+  ascii_text = ascii_text.replace(u'@', ' ')
+  ascii_text = ascii_text.replace(u':', ' ')
+  ascii_text = ascii_text.encode('ascii','ignore')
+  ascii_text = ascii_text.translate(None,punc_list)
+
+  return [x.lower() for x in ascii_text.split()]
 
 """
 Input: list of words.
@@ -139,6 +162,14 @@ def vertical_sum(matrix):
     for j in range(len(matrix)):
       s[i] += matrix[j][i]
   return s
+
+"""
+Input: array of feature vectors per email
+Output: array of arrays of values for same feature
+"""
+
+def by_features(matrix):
+  return zip(*matrix)
 
 """
 Input: array of testing email data, array of output classifications

@@ -1,5 +1,9 @@
 # Event-Detect
 CS51 Final Project to detect emails containing events. Inspired by HCS Mail projects.
+## To Run
+python Wrapper.py from command line
+datasets are included and defaulted within wrapper; uncomment raw_input at beginning for non-default files
+output capped at 20 emails, alternate for more
 ## Timeline
 |Date|Description|
 |:--|--:|

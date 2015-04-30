@@ -1,6 +1,7 @@
 import Utility as u
 from operator import itemgetter
-
+import numpy
+import sys
 """
 Input: (long) arrays of words for events and non-events
 Output: array of tuples of word and relative frequency between event and nonevent, sorted by relative frequency 
@@ -12,24 +13,16 @@ def get_rares(event_words,nonevent_words):
   event_freaks = u.get_frequencies(event_words)
   nonevent_freaks = u.get_frequencies(nonevent_words)
 
-  print event_freaks["your"], len(event_words)
-  print nonevent_freaks["your"], len(nonevent_words)
-
   all_words = list (set(event_freaks) | set(nonevent_freaks))
   relative_freaks = [("blank",0) for i in xrange(len(all_words))]
   word_count = 0
   for word in all_words:
     event_count = 0 if word not in event_freaks else event_freaks[word]
     nonevent_count = 0 if word not in nonevent_freaks else nonevent_freaks[word]
-    relative_freaks[word_count] = (word,event_count/float(len(event_words)) - nonevent_count/float(len(nonevent_words)))
+    relative_freaks[word_count] = (word,event_count/float(len(event_freaks)) - nonevent_count/float(len(nonevent_freaks)))
     word_count+=1
 
-  event_exclusive = list (set(event_freaks) - set(nonevent_freaks))
-  event_exclusive_tuples = [(word,event_freaks[word]) for word in event_exclusive]
-
   return sorted(relative_freaks,key=lambda tup: tup[1],reverse=True)
-  # return sorted(event_exclusive_tuples,key=lambda tup:tup[1],reverse=True)
-
 
 """
 Input: array of email words and rare words filename (optional).
@@ -57,6 +50,16 @@ def get_features(words,filename="rares.txt"):
     else:
       features[i] = 0
       features[i+num_rares] = 0
+  
+  # return features
+  # exclusivity only; uncomment above "return" to include frequency
+  
+  features = [0 for i in xrange(num_rares)]
+  for i in xrange(num_rares):
+    if rares[i] in word_freq:
+      features[i] = 10 # found by trial and error
+    else:
+      features[i] = 0
 
   return features
 
