@@ -83,23 +83,24 @@ def learn(data=[], rare=""):
   FEATURES
   """
 
-  # get int features
+  # get rares 
+  with open(rare_name) as rf:
+    rares = rf.readlines()
+  rares = [r.lower().rstrip() for r in rares]
+
+  # get features
   learning_nonevent_features = [[] for i in xrange(num_nonevents)]
   learning_event_features = [[] for i in xrange(num_events)]
 
   for i in xrange(num_nonevents):
     for k in fields:
-      if type(learning_data[0][k][0]) is not list:
-        continue 
       learning_nonevent_features[i] = (learning_nonevent_features[i] + 
-        f.get_features(learning_data[0][k][i], rare_name))
+        f.get_features(learning_data[0][k][i], k, rares))
 
   for i in xrange(num_events):
     for k in fields:
-      if type(learning_data[0][k][0]) is not list:
-        continue 
       learning_event_features[i] = (learning_event_features[i] +
-        f.get_features(learning_data[1][k][i], rare_name))
+        f.get_features(learning_data[1][k][i], k, rares))
 
 
   """
@@ -138,18 +139,18 @@ def learn(data=[], rare=""):
   distributionfile.write("\n")
   distributionfile.close()
 
-  sklfile = open('skl.txt','w')
-  sklfile.write(str(num_events) + "\n")
-  sklfile.write(str(num_nonevents) + "\n")
-  for i in xrange(num_events):
-    for j in learning_event_features[i]:
-      sklfile.write(str(j) + " ")
-    sklfile.write("\n")
-  for i in xrange(num_nonevents):
-    for j in learning_nonevent_features[i]:
-      sklfile.write(str(j) + " ")
-    sklfile.write("\n")
-  sklfile.close()
+  # sklfile = open('skl.txt','w')
+  # sklfile.write(str(num_events) + "\n")
+  # sklfile.write(str(num_nonevents) + "\n")
+  # for i in xrange(num_events):
+  #   for j in learning_event_features[i]:
+  #     sklfile.write(str(j) + " ")
+  #   sklfile.write("\n")
+  # for i in xrange(num_nonevents):
+  #   for j in learning_nonevent_features[i]:
+  #     sklfile.write(str(j) + " ")
+  #   sklfile.write("\n")
+  # sklfile.close()
 
 def guess(data=[], rare=""):
 
@@ -180,13 +181,16 @@ def guess(data=[], rare=""):
   CALCULATE TEST FEATURES
   """
 
+  # get rares 
+  with open(rare_name) as rf:
+    rares = rf.readlines()
+  rares = [r.lower().rstrip() for r in rares]
+
   guess_features = [[] for i in xrange(num_guesses)]
   for i in xrange(num_guesses):
     for k in fields:
-      if type(guess_data[k][0]) is not list:
-        continue 
       guess_features[i] = (guess_features[i] +
-        f.get_features(guess_data[k][i], rare_name))
+        f.get_features(guess_data[k][i], k, rares))
 
   """
   RETRIEVE DISTRIBUTION AND RUN BAYESIAN
@@ -226,19 +230,19 @@ def guess(data=[], rare=""):
   guesses = [b.two_bayesian(prior, i, two_posterior) for i in guess_features]
 
 
-  fi = open('skl.txt','r')
-  a = int(fi.readline().rstrip())
-  c = int(fi.readline().rstrip())
-  ef = [map(float, fi.readline().split()) for i in xrange(a)]
-  nef = [map(float, fi.readline().split()) for i in xrange(c)]
-  fi.close()
-  e = [1 for i in ef]
-  y = e + [0 for i in nef]
-  x = ef + nef
-  from sklearn.naive_bayes import MultinomialNB
-  clf = MultinomialNB()
-  clf.fit(x, y)
-  guesses = [clf.predict(i) for i in guess_features]
+  # fi = open('skl.txt','r')
+  # a = int(fi.readline().rstrip())
+  # c = int(fi.readline().rstrip())
+  # ef = [map(float, fi.readline().split()) for i in xrange(a)]
+  # nef = [map(float, fi.readline().split()) for i in xrange(c)]
+  # fi.close()
+  # e = [1 for i in ef]
+  # y = e + [0 for i in nef]
+  # x = ef + nef
+  # from sklearn.naive_bayes import MultinomialNB
+  # clf = MultinomialNB()
+  # clf.fit(x, y)
+  # guesses = [clf.predict(i) for i in guess_features]
 
   """
   RESULTS

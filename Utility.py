@@ -27,6 +27,8 @@ def read_learning_data(filename, numtypes):
   time = ["" for i in xrange(num_events)]
   non_sender = ["" for i in xrange(num_nonevents)]
   sender = ["" for i in xrange(num_events)]
+  nonfullmessage = ["" for i in xrange(num_nonevents)]
+  fullmessage = ["" for i in xrange(num_events)]
   non_subject = [[] for i in xrange(num_nonevents)]
   subject = [[] for i in xrange(num_events)]
   non_message = [[] for i in xrange(num_nonevents)]
@@ -50,6 +52,7 @@ def read_learning_data(filename, numtypes):
         message[event_count] = ["no", "message"]
       else: 
         message[event_count] = split_data(message_raw)
+      fullmessage[event_count] = uni_to_ascii(message_raw)
       event_count += 1
     else:
       non_time[nonevent_count] = book.cell(row,0).value
@@ -65,11 +68,12 @@ def read_learning_data(filename, numtypes):
         non_message[nonevent_count] = ["no", "message"]
       else:
         non_message[nonevent_count] = split_data(message_raw)
+      nonfullmessage[nonevent_count] = uni_to_ascii(message_raw)
       nonevent_count += 1
 
   # return tuple of dicts with each field type
-  event_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message}
-  non_event_data = {'time':non_time, 'sender': non_sender, 'subject':non_subject, 'message':non_message}
+  event_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message, 'fullmessage':fullmessage}
+  non_event_data = {'time':non_time, 'sender': non_sender, 'subject':non_subject, 'message':non_message, 'fullmessage':nonfullmessage}
   return (non_event_data, event_data)
 
 """
@@ -89,6 +93,7 @@ def read_test_data(filename, numtypes):
   sender = ["" for i in xrange(num_rows)]
   subject = [[] for i in xrange(num_rows)]
   message = [[] for i in xrange(num_rows)]
+  fullmessage = ["" for i in xrange(num_rows)]
 
   # iterate through excel, reading strings
   for row in xrange(1,num_rows+1):
@@ -105,9 +110,10 @@ def read_test_data(filename, numtypes):
       message[row-1] = ["no", "message"]
     else:
       message[row-1] = split_data(message_raw)
+    fullmessage = uni_to_ascii(message_raw)
 
   # return dict with each field type
-  test_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message}
+  test_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message, 'fullmessage':fullmessage}
 
   # print book.cell(42,3).value.encode('ascii','backslashreplace'), split_data(book.cell(42,3).value)
 
@@ -123,20 +129,25 @@ def read_event_ids(filename,numtypes):
   num_rows = book.nrows - 1
   return [book.cell(row, numtypes).value for row in xrange(1,num_rows+1)]
 
+
+def uni_to_ascii(text):
+  ascii_text = text.replace(u'\u2028', ' ') # bullet points
+  ascii_text = ascii_text.replace(u'@', ' ')
+  # ascii_text = ascii_text.replace(u':', ' ')
+  ascii_text = text.replace(u'\xa0', ' ') # spaces
+  ascii_text = ascii_text.encode('ascii','ignore')
+  return ascii_text
+
 """
 Input: unicode string
 Output: array of ascii words.
 Assumes space separation, though amount of spaces may be unclear. Restricted to module.
 """
 def split_data(text):
+  ascii_text = uni_to_ascii(text)
   # replace punctuation and misc chars
   punc_list = string.punctuation.replace("'","")
   char_map = string.maketrans(punc_list, ' '*len(punc_list))
-  ascii_text = text.replace(u'\xa0', ' ') # spaces
-  ascii_text = ascii_text.replace(u'\u2028', ' ') # bullet points
-  ascii_text = ascii_text.replace(u'@', ' ')
-  ascii_text = ascii_text.replace(u':', ' ')
-  ascii_text = ascii_text.encode('ascii','ignore')
   ascii_text = ascii_text.translate(None,punc_list)
 
   return [x.lower() for x in ascii_text.split()]
