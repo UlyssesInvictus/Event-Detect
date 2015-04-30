@@ -6,7 +6,53 @@ import Bayes as b
 import os
 import random
 
-def learn(data=[]):
+
+def set_rares():
+  # get filenames etc.
+  print "Chose file to output to (leave blank to default to rares.txt):"
+  rare_name = raw_input()
+  rare_name = "rares.txt" if rare_name == "" else rare_name
+  num_rares = 0
+  while num_rares == 0:
+    print "Choose number of rares:"
+    try:
+      num_rares = int(raw_input())
+    except:
+      print "Not a positive int."
+    else:
+      if num_rares < 1:
+        print "Not a positive int."
+        num_rares = 0
+  print "Enter name of file containing learning set: "
+  learning_name = "data/test_data.xlsx"#raw_input()
+  try:
+    learning_data = u.read_learning_data(learning_name,0)
+  except:
+    print "Error reading learning data. Check file and filename."
+    return
+  fields = list(learning_data[0])  
+  num_fields = len(fields)
+  num_nonevents = len(learning_data[0][fields[0]])
+  num_events = len(learning_data[1][fields[0]])
+
+  # create by frequency
+  all_event_words = []
+  all_nonevent_words = []
+  # concat all words...this could take a while
+  for k in fields:
+    if type(learning_data[0][k][0]) is not list:
+      continue
+    for i in xrange(num_events):
+      all_event_words = all_event_words + learning_data[1][k][i]
+    for i in xrange(num_nonevents):
+      all_nonevent_words = all_nonevent_words + learning_data[0][k][i]
+  rares = f.get_rares(all_event_words,all_nonevent_words)
+  rarefile = open('rares.txt','w')
+  for rare,count in rares[0:40]:
+    rarefile.write(rare+'\n')
+  rarefile.close()
+
+def learn(data=[], rare=""):
 
   """
   PREPROCESSING
@@ -23,31 +69,18 @@ def learn(data=[]):
   num_events = len(learning_data[1][fields[0]])
   num_learning = num_nonevents+num_events
 
-  print "Enter name of rare words file; leave blank to generate in rares.txt"
-  rare_name = "rares.txt"#"test.txt"#"human.txt"#"test.txt"#raw_input()
+  if rare == "":
+    print "Enter name of rare words file; leave blank to default to rares.txt"
+    rare_name = "rares.txt"#"test.txt"#"human.txt"#"test.txt"#raw_input()
+    if not os.path.isfile(rare_name):
+      print "Rare file does not exist. Set rares or check filename."
+      return
+  else:
+    rare_name = rare
 
   """
   FEATURES
   """
-  # set rares
-  if rare_name == "":
-    rare_name = "rares.txt"
-    # create by frequency
-    all_event_words = []
-    all_nonevent_words = []
-    # concat all words...this could take a while
-    for k in fields:
-      if type(learning_data[0][k][0]) is not list:
-        continue
-      for i in xrange(num_events):
-        all_event_words = all_event_words + learning_data[1][k][i]
-      for i in xrange(num_nonevents):
-        all_nonevent_words = all_nonevent_words + learning_data[0][k][i]
-    rares = f.get_rares(all_event_words,all_nonevent_words)
-    rarefile = open('rares.txt','w')
-    for rare,count in rares[0:40]:
-      rarefile.write(rare+'\n')
-    rarefile.close()
 
   # get int features
   learning_nonevent_features = [[] for i in xrange(num_nonevents)]
@@ -124,7 +157,7 @@ def learn(data=[]):
   distributionfile.write("\n")
   distributionfile.close()
 
-def guess(data=[]):
+def guess(data=[], rare=""):
 
   """
   PREPROCESSING
@@ -140,8 +173,14 @@ def guess(data=[]):
   num_fields = len(fields)
   num_guesses = len(guess_data[fields[0]])
 
-  print "Enter name of rare words file; leave blank to generate in rares.txt"
-  rare_name = "rares.txt"#"test.txt"#"human.txt"#"test.txt"#raw_input()
+  if rare == "":
+    print "Enter name of rare words file; leave blank to default to rares.txt"
+    rare_name = "rares.txt"#"test.txt"#"human.txt"#"test.txt"#raw_input()
+    if not os.path.isfile(rare_name):
+      print "Rare file does not exist. Set rares or check filename."
+      return
+  else:
+    rare_name = rare
 
   """
   CALCULATE TEST FEATURES
@@ -209,17 +248,14 @@ def guess(data=[]):
 
   return guesses
 
-def test():
+def test(data, rare):
 
   """
   PREPROCESSING
   """
 
-  # read files
+  # some useful variables
 
-  print "Enter name of file containing data set: "
-  data_name = "data/test_data.xlsx"#raw_input()
-  data = u.read_learning_data(data_name,0)
   fields = list(data[0])
   num_fields = len(fields)
   num_nonevents = len(data[0][fields[0]])
@@ -260,8 +296,8 @@ def test():
 
   # learn and guess
 
-  learn(learning_data)
-  guesses = guess(test_data)
+  learn(data=learning_data,rare=rare)
+  guesses = guess(data=test_data,rare=rare)
 
   # TEST ONLY
   true_ids = [False if i < num_nonevents else True for i in test_indices]
@@ -289,6 +325,52 @@ def test():
 
   return (accuracy, num_right_true / float(num_real_true), num_right_false / float(num_real_false))
 
+
+def multi_test():
+
+  print "Enter name of file containing data set: "
+  data_name = "data/test_data.xlsx"#raw_input() 
+  data = u.read_learning_data(data_name,0)
+
+  print "Enter name of rare words file; leave blank to default to rares.txt"
+  rare_name = "rares.txt"#"test.txt"#"human.txt"#"test.txt"#raw_input()
+  if not os.path.isfile(rare_name):
+    print "Rare file does not exist. Set rares or check filename."
+    return
+
+  num_tests = 0
+  while num_tests == 0:
+    print "Choose number of runs:"
+    try:
+      num_tests = int(raw_input())
+    except:
+      print "Not a positive int."
+    else:
+      if num_tests < 1:
+        print "Not a positive int."
+        num_tests = 0
+
+
+  results = [(0,0,0) for i in xrange(num_tests)]
+  acc_mean = 0
+  true_mean = 0
+  false_mean = 0
+
+  print "Running " + str(num_tests) + " tests"
+
+  for i in xrange(num_tests):
+    print "Test **" + str(i) + "**" 
+    results[i] = test(data=data, rare=rare_name)
+    acc_mean+=results[i][0]
+    true_mean+=results[i][1]
+    false_mean+=results[i][2]
+
+  print "Mean accuracy: ", acc_mean/(num_tests)
+  print "Mean true: ", true_mean/(num_tests)
+  print "Mean false: ", false_mean/(num_tests)
+
+  return (acc_mean,true_mean,false_mean)
+
 """
 ===================================================================================================
 """
@@ -299,26 +381,34 @@ ACTUALLY DO THINGS
 ===================================================================================================
 """
 
-num_tests = 30
+print "Welcome to Event-Detect, a CS51 Project"
 
-results = [(0,0,0) for i in xrange(num_tests)]
-acc_mean = 0
-true_mean = 0
-false_mean = 0
+choice = 1
 
-print "Running " + str(num_tests) + " tests"
+while choice != 0:
+  print "Choose option:"
+  print "1. Set rares: store most common event words for feature calculation using learning set"
+  print "2. Learn: store prior and posteriors using learning set"
+  print "3. Guess: make series of guesses using guess set"
+  print "4. Test: Test accuracy of algorithm using a learning set"
+  print "0. Exit"
+  try:
+    choice = int(raw_input())
+  except:
+    print "Not a valid choice. Select again."
 
-for i in xrange(num_tests):
-  print "Test **" + str(i) + "**" 
-  results[i] = test()
-  acc_mean+=results[i][0]
-  true_mean+=results[i][1]
-  false_mean+=results[i][2]
-
-print "Mean accuracy: ", acc_mean/(num_tests)
-print "Mean true: ", true_mean/(num_tests)
-print "Mean false: ", false_mean/(num_tests)
-
+  if choice < 0  or choice > 4:
+    print "Not a valid choice. Select again."
+  else:
+    if choice == 1:
+      set_rares()
+    elif choice == 2:
+      learn()
+    elif choice == 3:
+      g = guess()
+      print g
+    elif choice == 4:
+      multi_test()
 
 
 
