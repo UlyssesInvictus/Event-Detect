@@ -45,10 +45,11 @@ def set_rares():
     for i in xrange(num_events):
       all_event_words = all_event_words + learning_data[1][k][i]
     for i in xrange(num_nonevents):
+      print i
       all_nonevent_words = all_nonevent_words + learning_data[0][k][i]
   rares = f.get_rares(all_event_words,all_nonevent_words)
   rarefile = open('rares.txt','w')
-  for rare,count in rares[0:40]:
+  for rare,count in rares[0:num_rares]:
     rarefile.write(rare+'\n')
   rarefile.close()
 
@@ -101,20 +102,6 @@ def learn(data=[], rare=""):
         f.get_features(learning_data[1][k][i], rare_name))
 
 
-  # then convert to bit vectors
-  # first, sum all vectors to get average
-  sum_nonevents = u.vertical_sum(learning_nonevent_features)
-  sum_events = u.vertical_sum(learning_event_features)
-  avgs_learning = [float(i)/num_learning for i in u.vertical_sum([sum_events,sum_nonevents])]
-
-  # print sum_nonevents
-  # print sum_events
-  # print avgs_learning
-
-  # print "learning nonevent features: ", learning_nonevent_features
-  # print "learning event features: ", learning_event_features
-  # print "test features: ", test_features
-
   """
   DISTRIBUTION STORAGE
   """
@@ -122,18 +109,12 @@ def learn(data=[], rare=""):
   # get prior
   prior = (num_events/float(num_learning),
     num_nonevents/float(num_learning))
+  
   # get posterior
-
   event_by_features = u.by_features(learning_event_features)
   nonevent_by_features = u.by_features(learning_nonevent_features)
-
-  # two curves
   event_posterior = [(b.mean(feature),b.stdev(feature)) for feature in event_by_features]
   nonevent_posterior = [(b.mean(feature),b.stdev(feature)) for feature in nonevent_by_features]
-
-  # one curve
-  # all_by_features = u.by_features(learning_event_features+learning_nonevent_features)
-  # one_posterior = [(b.mean(feature), b.stdev(feature)) for feature in all_by_features]
 
   # store in file
   distributionfile = open('distribution.txt','w')
@@ -156,6 +137,19 @@ def learn(data=[], rare=""):
     distributionfile.write(str(i[1]) + " ")
   distributionfile.write("\n")
   distributionfile.close()
+
+  sklfile = open('skl.txt','w')
+  sklfile.write(str(num_events) + "\n")
+  sklfile.write(str(num_nonevents) + "\n")
+  for i in xrange(num_events):
+    for j in learning_event_features[i]:
+      sklfile.write(str(j) + " ")
+    sklfile.write("\n")
+  for i in xrange(num_nonevents):
+    for j in learning_nonevent_features[i]:
+      sklfile.write(str(j) + " ")
+    sklfile.write("\n")
+  sklfile.close()
 
 def guess(data=[], rare=""):
 
@@ -230,7 +224,21 @@ def guess(data=[], rare=""):
 
   # # guess!
   guesses = [b.two_bayesian(prior, i, two_posterior) for i in guess_features]
-  # guesses = [b.one_bayesian(prior, i, one_posterior) for i in test_features]
+
+
+  fi = open('skl.txt','r')
+  a = int(fi.readline().rstrip())
+  c = int(fi.readline().rstrip())
+  ef = [map(float, fi.readline().split()) for i in xrange(a)]
+  nef = [map(float, fi.readline().split()) for i in xrange(c)]
+  fi.close()
+  e = [1 for i in ef]
+  y = e + [0 for i in nef]
+  x = ef + nef
+  from sklearn.naive_bayes import MultinomialNB
+  clf = MultinomialNB()
+  clf.fit(x, y)
+  guesses = [clf.predict(i) for i in guess_features]
 
   """
   RESULTS
@@ -395,7 +403,7 @@ while choice != 0:
   try:
     choice = int(raw_input())
   except:
-    print "Not a valid choice. Select again."
+    choice = -1
 
   if choice < 0  or choice > 4:
     print "Not a valid choice. Select again."
