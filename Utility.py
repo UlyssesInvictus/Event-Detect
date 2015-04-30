@@ -155,7 +155,7 @@ Output: whether time like words are in email. Ignores forwarded and replied emai
 
 def contains_time(words):
   times = []
-  times += ['00pm','30pm','00am','00pm']
+  times += ['00pm','30pm','00am','30am']
   times = times + [str(i)+"am" for i in xrange(1,12)]
   times = times + [str(i)+"pm" for i in xrange(1,12)]
   times = times + ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]

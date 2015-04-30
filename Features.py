@@ -35,6 +35,7 @@ Metrics TBD. Currently set: number of rare words. Boolean for rare word.
 def get_features(data,type_words,rares):
 
   if type_words == "sender":
+    return []
     if "lists.hcs.harvard.edu" in data or "lists.fas.harvard.edu" in data:
       return [10]
     else:
@@ -45,6 +46,7 @@ def get_features(data,type_words,rares):
     
     num_rares = len(rares)
 
+    # features as frequency rather than presence; caused overfitting, but left for legacy
     # calculate feature vector
     # num_matching = 0
     # features = [0 for i in xrange(num_rares * 2)]
@@ -77,8 +79,14 @@ def get_features(data,type_words,rares):
       features+=[10]
     else:
       features+=[0]
+
     if u.contains_time(data):
       features+=[10]
+    else:
+      features+=[0]
+
+    if "facebook" in data or "join" in data or "come" in data or "invited" in data:
+      features+=[10000]
     else:
       features+=[0]
 
