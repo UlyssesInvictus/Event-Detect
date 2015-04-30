@@ -39,28 +39,20 @@ def get_features(data,type_words,rares):
       return [10]
     else:
       return [0]
-  # elif type_words == "fullmessage":
-  #   try:
-  #     current = dparser.parse("blank",fuzzy=True)
-  #     result = dparser.parse(data,fuzzy=True)
-  #     if result == current:
-  #       return [0]
-  #     else:
-  #       return [10]
-  #   except:
-  #     return [0]
-  elif type_words == "message" or type_words == "subject":
+  elif type_words == "messagesubject":
     # get frequencies for words
     word_freq = u.get_frequencies(data)
     
     num_rares = len(rares)
 
     # calculate feature vector
+    # num_matching = 0
     # features = [0 for i in xrange(num_rares * 2)]
     # for i in xrange(num_rares):
     #   if rares[i] in word_freq:
     #     features[i] = word_freq[rares[i]]
-    #     features[i+num_rares] = 1
+    #     features[i+num_rares] = 10
+    #     num_matching+=1
     #   else:
     #     features[i] = 0
     #     features[i+num_rares] = 0
@@ -69,8 +61,8 @@ def get_features(data,type_words,rares):
     # exclusivity only; uncomment above "return" to include frequency
     
     num_matching = 0
-    features = [0 for i in xrange(100)]
-    for i in xrange(100):#num_rares):
+    features = [0 for i in xrange(num_rares)]
+    for i in xrange(num_rares):#num_rares):
       if rares[i] in word_freq:
         features[i] = 10 # found by trial and error
         num_matching+=1
@@ -79,20 +71,17 @@ def get_features(data,type_words,rares):
 
     features+=[len(data)]
     features+=[num_matching]
+
     if (("location" in data or "where" in data or "place" in data) and 
         ("time" in data or "when" in data or "date" in data)):
       features+=[10]
     else:
       features+=[0]
-
     if u.contains_time(data):
       features+=[10]
     else:
       features+=[0]
 
-    return features
+    return features    
   else:
     return []
-
-def get_bits(features,averages):
-  return [features[i] > averages[i] for i in xrange(len(features))]

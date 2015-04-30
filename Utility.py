@@ -17,65 +17,48 @@ def read_learning_data(filename, numtypes):
   num_events = 0
   num_nonevents = 0
   for row in xrange(1,num_rows+1):
-    if book.cell(row,4).value == 1:
-      num_events += 1
-    else:
-      num_nonevents += 1
+    subject_raw = uni_to_ascii((book.cell(row,2).value))
+    if "[" in subject_raw and "]" in subject_raw:
+      if book.cell(row,4).value == 1:
+        num_events += 1
+      else:
+        num_nonevents += 1
 
-  # initalize keys
-  non_time = ["" for i in xrange(num_nonevents)]
-  time = ["" for i in xrange(num_events)]
-  non_sender = ["" for i in xrange(num_nonevents)]
-  sender = ["" for i in xrange(num_events)]
-  nonfullmessage = ["" for i in xrange(num_nonevents)]
-  fullmessage = ["" for i in xrange(num_events)]
-  non_subject = [[] for i in xrange(num_nonevents)]
-  subject = [[] for i in xrange(num_events)]
-  non_message = [[] for i in xrange(num_nonevents)]
-  message = [[] for i in xrange(num_events)]
+  edata = {'time': ["" for i in xrange(num_events)], "sender": ["" for i in xrange(num_events)], 
+    "message":[[] for i in xrange(num_events)], "subject":[[] for i in xrange(num_events)],
+    "fullmessage":["" for i in xrange(num_events)],"messagesubject":[[] for i in xrange(num_events)]}
+
+  nondata = {'time': ["" for i in xrange(num_nonevents)], "sender": ["" for i in xrange(num_nonevents)], 
+    "message":[[] for i in xrange(num_nonevents)], "subject":[[] for i in xrange(num_nonevents)],
+    "fullmessage":["" for i in xrange(num_nonevents)],"messagesubject":[[] for i in xrange(num_nonevents)]}
+
+  data = (nondata,edata)
 
   # iterate through excel, reading strings
-  event_count = 0
-  nonevent_count = 0
+  count = [-1,-1]
   for row in xrange(1,num_rows+1):
-    if book.cell(row,4).value == 1:
-      time[event_count] = book.cell(row,0).value
-      send_raw = book.cell(row,1).value
-      sender[event_count] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
-      subject_raw = (book.cell(row,2).value)
-      if subject_raw == "":
-        subject[event_count] = ["no", "subject"]
-      else:
-        subject[event_count] = split_data(subject_raw)
-      message_raw = (book.cell(row,3).value)
-      if message_raw == "":
-        message[event_count] = ["no", "message"]
-      else: 
-        message[event_count] = split_data(message_raw)
-      fullmessage[event_count] = uni_to_ascii(message_raw)
-      event_count += 1
+    subject_raw = uni_to_ascii((book.cell(row,2).value))
+    if "[" not in subject_raw or "]" not in subject_raw:
+      continue
+    e = int (book.cell(row,4).value)
+    count[e]+=1
+    data[e]['time'][count[e]] = book.cell(row,0).value
+    send_raw = book.cell(row,1).value
+    data[e]['sender'][count[e]] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
+    subject_raw = (book.cell(row,2).value)
+    if subject_raw == "":
+      data[e]['subject'][count[e]] = ["no", "subject"]
     else:
-      non_time[nonevent_count] = book.cell(row,0).value
-      send_raw = book.cell(row,1).value
-      non_sender[nonevent_count] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
-      subject_raw = (book.cell(row,2).value)
-      if subject_raw == "":
-        non_subject[nonevent_count] = ["no", "subject"]
-      else:
-        non_subject[nonevent_count] = split_data(subject_raw)
-      message_raw = (book.cell(row,3).value)
-      if message_raw == "":
-        non_message[nonevent_count] = ["no", "message"]
-      else:
-        non_message[nonevent_count] = split_data(message_raw)
-      nonfullmessage[nonevent_count] = uni_to_ascii(message_raw)
-      nonevent_count += 1
+      data[e]['subject'][count[e]] = split_data(subject_raw)
+    message_raw = (book.cell(row,3).value)
+    if message_raw == "":
+      data[e]['message'][count[e]] = ["no", "message"]
+    else: 
+      data[e]['message'][count[e]] = split_data(message_raw)
+    data[e]['fullmessage'][count[e]] = uni_to_ascii(message_raw)
+    data[e]['messagesubject'][count[e]] = data[e]['message'][count[e]]+data[e]['subject'][count[e]]
 
-  # return tuple of dicts with each field type
-  event_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message, 'fullmessage':fullmessage}
-  non_event_data = {'time':non_time, 'sender': non_sender, 'subject':non_subject, 'message':non_message, 'fullmessage':nonfullmessage}
-  return (non_event_data, event_data)
-
+  return data
 """
 Input: filename of test data and number of columns of email data
 Output: Array of arrays of email data.
@@ -151,7 +134,7 @@ def split_data(text):
   # replace punctuation and misc chars
   punc_list = string.punctuation.replace("'","")
   char_map = string.maketrans(punc_list, ' '*len(punc_list))
-  ascii_text = ascii_text.translate(None,punc_list)
+  ascii_text = ascii_text.translate(char_map)
 
   return [x.lower() for x in ascii_text.split()]
 
@@ -172,6 +155,7 @@ Output: whether time like words are in email. Ignores forwarded and replied emai
 
 def contains_time(words):
   times = []
+  times += ['00pm','30pm','00am','00pm']
   times = times + [str(i)+"am" for i in xrange(1,12)]
   times = times + [str(i)+"pm" for i in xrange(1,12)]
   times = times + ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
@@ -179,7 +163,7 @@ def contains_time(words):
   times = times + ["sun","sat","mon","tues","wed","thurs","fri"]
   times = times + ["sunday","saturday","monday","tuesday","wednesday","thursday","friday"]
 
-  return not ("forward" in words or "forwarded" in words or "reply" in words) and any(i in words for i in times)
+  return not ("forward" in words or "forwarded" in words or "fw" in words or "reply" in words or "re" in words) and any(i in words for i in times)
 """
 Input: array of feature vectors per email
 Output: array of arrays of values for same feature
