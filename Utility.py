@@ -129,12 +129,15 @@ def read_event_ids(filename,numtypes):
   num_rows = book.nrows - 1
   return [book.cell(row, numtypes).value for row in xrange(1,num_rows+1)]
 
-
+"""
+Input: unicode string
+Output: ascii string, with punctuation appropriately transformed
+"""
 def uni_to_ascii(text):
   ascii_text = text.replace(u'\u2028', ' ') # bullet points
   ascii_text = ascii_text.replace(u'@', ' ')
-  # ascii_text = ascii_text.replace(u':', ' ')
-  ascii_text = text.replace(u'\xa0', ' ') # spaces
+  ascii_text = ascii_text.replace(u':', ' ')
+  ascii_text = ascii_text.replace(u'\xa0', ' ') # spaces
   ascii_text = ascii_text.encode('ascii','ignore')
   return ascii_text
 
@@ -163,17 +166,20 @@ def get_frequencies(words):
   return dict(freq_dict)
 
 """
-Input: matrix of numbers
-Output: array with same length as matrix where elements are vertically summed
+Input: list of words.
+Output: whether time like words are in email. Ignores forwarded and replied emails.
 """
-# To be replaced by numpy eventually
-def vertical_sum(matrix):
-  s = [0 for i in range(len(matrix[0]))]
-  for i in range(len(matrix[0])):
-    for j in range(len(matrix)):
-      s[i] += matrix[j][i]
-  return s
 
+def contains_time(words):
+  times = []
+  times = times + [str(i)+"am" for i in xrange(1,12)]
+  times = times + [str(i)+"pm" for i in xrange(1,12)]
+  times = times + ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
+  times = times + ["january","february","march","april","may","june","july","august","september","october","november","december"]
+  times = times + ["sun","sat","mon","tues","wed","thurs","fri"]
+  times = times + ["sunday","saturday","monday","tuesday","wednesday","thursday","friday"]
+
+  return not ("forward" in words or "forwarded" in words or "reply" in words) and any(i in words for i in times)
 """
 Input: array of feature vectors per email
 Output: array of arrays of values for same feature

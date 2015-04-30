@@ -24,7 +24,7 @@ def set_rares():
         print "Not a positive int."
         num_rares = 0
   print "Enter name of file containing learning set: "
-  learning_name = "data/test_data.xlsx"#raw_input()
+  learning_name = "data/small_data.xlsx"#raw_input()
   try:
     learning_data = u.read_learning_data(learning_name,0)
   except:
@@ -341,7 +341,7 @@ def test(data, rare):
 def multi_test():
 
   print "Enter name of file containing data set: "
-  data_name = "data/test_data.xlsx"#raw_input() 
+  data_name = "data/small_data.xlsx"#raw_input() 
   data = u.read_learning_data(data_name,0)
 
   print "Enter name of rare words file; leave blank to default to rares.txt"

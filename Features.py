@@ -35,7 +35,7 @@ Metrics TBD. Currently set: number of rare words. Boolean for rare word.
 def get_features(data,type_words,rares):
 
   if type_words == "sender":
-    if "lists.hcs.harvard.edu" in data: # "lists.fas.harvard.edu" in data:
+    if "lists.hcs.harvard.edu" in data or "lists.fas.harvard.edu" in data:
       return [10]
     else:
       return [0]
@@ -69,8 +69,8 @@ def get_features(data,type_words,rares):
     # exclusivity only; uncomment above "return" to include frequency
     
     num_matching = 0
-    features = [0 for i in xrange(80)]
-    for i in xrange(80):#num_rares):
+    features = [0 for i in xrange(100)]
+    for i in xrange(100):#num_rares):
       if rares[i] in word_freq:
         features[i] = 10 # found by trial and error
         num_matching+=1
@@ -81,6 +81,11 @@ def get_features(data,type_words,rares):
     features+=[num_matching]
     if (("location" in data or "where" in data or "place" in data) and 
         ("time" in data or "when" in data or "date" in data)):
+      features+=[10]
+    else:
+      features+=[0]
+
+    if u.contains_time(data):
       features+=[10]
     else:
       features+=[0]
