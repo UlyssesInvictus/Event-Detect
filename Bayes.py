@@ -47,19 +47,7 @@ input:
 output: bool for event
 """
 def two_bayesian (prior, features, posterior):
-	# filtered=[]
-	# event_prob = []
-	# non_event_prob = []
-	# for i in range(len(bit_features)):
-	# 	if bit_features[i] == True:
-	# 		filtered.append(posterior[i])
-	# for (event, non_event) in filtered:
-	# 	event_prob.append(event)
-	# 	non_event_prob.append(non_event)
-	# x = reduce(mul, event_prob, 1)
-	# y = reduce(mul, non_event_prob, 1)
-	# return prior[0]*x > prior[1]*y
-  
+ 
   event_prob = [0 for i in xrange(len(features))]
   nonevent_prob = [0 for i in xrange(len(features))]
   for i in xrange(len(features)):

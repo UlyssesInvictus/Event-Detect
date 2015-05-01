@@ -1,3 +1,6 @@
+import os
+import sys
+sys.path.append(os.getcwd())
 import xlrd
 import string
 from collections import defaultdict
@@ -72,33 +75,44 @@ def read_test_data(filename, numtypes):
 
   # initalize keys in the final dictionary
   num_rows = book.nrows - 1
-  time = ["" for i in xrange(num_rows)]
-  sender = ["" for i in xrange(num_rows)]
-  subject = [[] for i in xrange(num_rows)]
-  message = [[] for i in xrange(num_rows)]
-  fullmessage = ["" for i in xrange(num_rows)]
+  num_data = 0
+  for row in xrange(1,num_rows+1):
+    subject_raw = uni_to_ascii((book.cell(row,2).value))
+    if "[" in subject_raw and "]" in subject_raw:
+      num_data+=1
+
+  time = ["" for i in xrange(num_data)]
+  sender = ["" for i in xrange(num_data)]
+  subject = [[] for i in xrange(num_data)]
+  message = [[] for i in xrange(num_data)]
+  fullmessage = ["" for i in xrange(num_data)]
+  messagesubject = [[] for i in xrange(num_data)]
 
   # iterate through excel, reading strings
+  count = -1
   for row in xrange(1,num_rows+1):
-    time[row-1] = book.cell(row,0).value
+    subject_raw = uni_to_ascii((book.cell(row,2).value))
+    if "[" not in subject_raw or "]" not in subject_raw:
+      continue
+    time[count] = book.cell(row,0).value
     send_raw = book.cell(row,1).value
-    sender[row-1] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
+    sender[count] = send_raw[send_raw.find("<")+1:send_raw.find(">")].encode('ascii','ignore') # assumes <"name"> sender format
     subject_raw = (book.cell(row,2).value)
     if subject_raw == "":
-      subject[row-1] = ["no", "subject"]
+      subject[count] = ["no", "subject"]
     else:
-      subject[row-1] = split_data(subject_raw)
+      subject[count] = split_data(subject_raw)
     message_raw = (book.cell(row,3).value)
     if message_raw == "":
-      message[row-1] = ["no", "message"]
+      message[count] = ["no", "message"]
     else:
-      message[row-1] = split_data(message_raw)
+      message[count] = split_data(message_raw)
     fullmessage = uni_to_ascii(message_raw)
+    messagesubject[count] = message[count] + subject[count]
+    count+=1
 
   # return dict with each field type
-  test_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message, 'fullmessage':fullmessage}
-
-  # print book.cell(42,3).value.encode('ascii','backslashreplace'), split_data(book.cell(42,3).value)
+  test_data = {'time':time, 'sender':sender, 'subject':subject, 'message':message, 'fullmessage':fullmessage, 'messagesubject' :messagesubject}
 
   return test_data
 
