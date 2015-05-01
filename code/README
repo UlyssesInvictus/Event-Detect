@@ -1,0 +1,29 @@
+Welcome to our NLP Email Classifier to get started:
+
+1. Please set your working directory to /Event-Detect/code
+
+2. Start python
+
+3. import Detect
+
+4. Choose the Set rares option with "1" and enter the file you would like
+   to save rares to.
+
+5. Enter the number of rare words you would like, 100 is optimal for our
+   included learning set. Our default learning set is 
+   "../data/learning_data.xlsx"
+
+6. Next choose the option "2" to enter learning phase. Enter in name of
+   learning set once more, and enter name of rare words file created previously.
+
+7. We proceed to testing with option "4". Our included testing set is
+   "../data/test_data.xlsx". Input rare words file once more, and choose number
+   of runs you would like (runs randomly sample from test set to gauge average
+   accuracy); we suggest 20-40 runs for the sake of time.
+
+8. Option 3 allows for guessing. Test sets and learning sets must be labelled,
+   while guess sets must not. Our guess set is "../data/guess_data.xlsx"
+
+Thank You!
+Best,
+Frances, Raynor, Jimmy, Daniel
