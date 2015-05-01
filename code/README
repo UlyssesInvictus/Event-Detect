@@ -14,19 +14,19 @@ To get started:
    to save rares to.
 
 5. Enter the number of rare words you would like, 100 is optimal for our
-   included learning set. Our default learning set is 
-   "../data/learning_data.xlsx"
+   included test set. Our default test set is 
+   "../data/test_data.xlsx."
 
-6. Next choose the option "2" to enter learning phase. Enter in name of
-   learning set once more, and enter name of rare words file created previously.
+6. (Optional) Choose the option "2" to enter learning phase. Enter in the name of
+   learning set once more, and enter the name of the rare words file created previously. 
+   Then choose option "3" to guess, supplying the name of a guess set and the same rares file.
+   Learning sets must be labelled with event IDs, while guess sets do not have to be.
+   See "../data/learning_data.xlsx" and "../data/guess_data.xlsx" for examples.
 
-7. We proceed to testing with option "4". Our included testing set is
-   "../data/test_data.xlsx". Input rare words file once more, and choose number
+7. We proceed to testing with option "4". Select a testing file,
+   input the rare words file once more, and choose the number
    of runs you would like (runs randomly sample from test set to gauge average
    accuracy); we suggest 20-40 runs for the sake of time.
-
-8. Option 3 allows for guessing. Test sets and learning sets must be labelled,
-   while guess sets must not. Our guess set is "../data/guess_data.xlsx"
 
 Thank You!
 Best,
